@@ -10,11 +10,13 @@ let isA t c              = List.exists (fun c' -> c = c') t
 let operator   = ["/\\"; "\\/"; "~"]
 let letter     = explode "abcdefghijklmnopqrstuvwxyz"
 let asdf     = explode "\\/()~"
+let single_letter_symbol = explode "()~"
 let whitespace = explode " \n"
 
 
 let rec lex = function
   | (c :: _ ) as cs when c |> isA letter     -> lex_word "" cs
+  | (c :: cs)       when c |> isA single_letter_symbol -> get_symbol c :: lex cs
   | (c :: _ ) as cs when c |> isA asdf     -> lex_op   "" cs
   | (c :: cs)       when c |> isA whitespace -> lex cs
   | (c :: _ )                                -> failwith ("unknown : " + string c)
@@ -27,9 +29,10 @@ and lex_word s = function
 
 
 and lex_op s = function
-  | (c :: cs) when string c |> isA operator -> get_op (string c) :: lex cs
-  | (c :: cs) when c        |> isA asdf   -> lex_op (s + string c) cs
-  |       cs                                -> get_op s :: lex cs
+  //| (c :: cs) when c            |> isA single_letter_symbol -> get_op (string c) :: lex cs
+  | (c :: cs) when     string c |> isA operator             -> get_op (string c) :: lex cs
+  | (c :: cs) when c            |> isA asdf                 -> lex_op (s + string c) cs
+  |       cs                                                -> get_op s :: lex cs
 
   (*
   | (c :: cs) when c = '~' && s = "" -> get_symbol c :: lex cs
@@ -64,11 +67,16 @@ let rec checker = function
   | (   [], b::_ )              -> (false, (b, LITERAL "length mismatch"))
   | _                           -> (false, (LITERAL "error", LITERAL "error"))
 
-let prog = "~ (p /\ q) \/ (~p/\q)"
+let prog  = "~ (p /\ q) \/ (~p/\q)"
 let expected_output = [NEG; LPAR; LITERAL "p"; CON; LITERAL "q"; RPAR; DIS; LPAR; NEG; LITERAL "p"; CON; LITERAL "q"; RPAR]
 let output = (explode prog |> lex)
+let output2 = String.filter (fun x -> x <> ' ') prog |> explode |> lex
 
 printfn "input: %A"   prog
-printfn "output: %A"  output
-printfn "result: %A" (checker (output, expected_output))
+let (r,e) = checker (output, expected_output) in
+  if not r then
+    printfn "\noutput: %A\nresult: %A" output e
 
+let (r,e) = checker (output2, expected_output) in
+  if not r then
+    printfn "\noutput2: %A\nresult: %A" output2 e
