@@ -18,10 +18,9 @@ let whitespace = explode " \n"
 
 let rec lex = function
   | (c :: _ ) as cs when c |> isA letter     -> lex_word "" cs
-//| (c :: cs)       when c |> isA single_letter_symbol -> get_symbol c :: lex cs
-  | (c :: _ ) as cs when c |> isA asdf     -> lex_op   "" cs
+  | (c :: _ ) as cs when c |> isA asdf       -> lex_op   "" cs
   | (c :: cs)       when c |> isA whitespace -> lex cs
-  | (c :: _ )                                -> failwith ("unknown : " + string c)
+  | (c :: _ )                                -> failwith ("Unhandled symbol: " + string c)
   | (_ : char list) -> ([] : TOKEN list)
 
 
@@ -31,17 +30,10 @@ and lex_word s = function
 
 
 and lex_op s = function
-  | (c :: cs) when s + string c     |> isA operator             -> get_op (s + string c) :: lex cs
-  | (c :: cs) when c            |> isA single_letter_symbol -> get_op (string c) :: lex cs
+  | (c :: cs) when s + string c |> isA operator             -> get_op (s + string c) :: lex cs
+  | (c :: cs) when c            |> isA single_letter_symbol -> get_op (string c)     :: lex cs
   | (c :: cs) when c            |> isA asdf                 -> lex_op (s + string c) cs
-  |       cs                                                -> get_op s :: lex cs
-
-
-and get_symbol = function
-  | '~'        -> NEG
-  | '('        -> LPAR
-  | ')'        -> RPAR
-  | _          -> failwith ("Unrecognized symbol: ")
+  |       cs                                                -> get_op s              :: lex cs
 
 
 and get_op = function
