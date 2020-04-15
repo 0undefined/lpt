@@ -1,3 +1,5 @@
+module Cnf
+
 type TOKEN =
   | LITERAL of string
   | CON  | DIS
@@ -16,7 +18,7 @@ let whitespace = explode " \n"
 
 let rec lex = function
   | (c :: _ ) as cs when c |> isA letter     -> lex_word "" cs
-  | (c :: cs)       when c |> isA single_letter_symbol -> get_symbol c :: lex cs
+//| (c :: cs)       when c |> isA single_letter_symbol -> get_symbol c :: lex cs
   | (c :: _ ) as cs when c |> isA asdf     -> lex_op   "" cs
   | (c :: cs)       when c |> isA whitespace -> lex cs
   | (c :: _ )                                -> failwith ("unknown : " + string c)
@@ -29,54 +31,23 @@ and lex_word s = function
 
 
 and lex_op s = function
-  //| (c :: cs) when c            |> isA single_letter_symbol -> get_op (string c) :: lex cs
-  | (c :: cs) when     string c |> isA operator             -> get_op (string c) :: lex cs
+  | (c :: cs) when s + string c     |> isA operator             -> get_op (s + string c) :: lex cs
+  | (c :: cs) when c            |> isA single_letter_symbol -> get_op (string c) :: lex cs
   | (c :: cs) when c            |> isA asdf                 -> lex_op (s + string c) cs
   |       cs                                                -> get_op s :: lex cs
-
-  (*
-  | (c :: cs) when c = '~' && s = "" -> get_symbol c :: lex cs
-  | (c :: cs) when c = '(' && s = "" -> get_symbol c :: lex cs
-  | (c :: cs) when c = ')' && s = "" -> get_symbol c :: lex cs
-   *)
 
 
 and get_symbol = function
   | '~'        -> NEG
   | '('        -> LPAR
   | ')'        -> RPAR
-  | _          -> failwith ("Unrecognized symbol: ") // + string sym)
+  | _          -> failwith ("Unrecognized symbol: ")
 
 
 and get_op = function
-  | "~"   -> NEG  //:: get_op cs
-  | "("   -> LPAR //:: get_op cs
-  | ")"   -> RPAR //:: get_op cs
+  | "~"   -> NEG
+  | "("   -> LPAR
+  | ")"   -> RPAR
   | "/\\" -> CON
   | "\\/" -> DIS
   | op    -> failwith ("Unrecognized operator: " + string op)
-  // | c::cs -> get_symbol c
-  // | [] -> ([] : TOKEN list)
-
-
-let rec checker = function
-  | (a::aa, b::bb) when a = b   -> checker (aa, bb)
-  | (a::_ , b::_ ) when a <> b  -> (false, (a,  b))
-  | (   [],    [])              -> (true,  (LITERAL "ok", LITERAL "ok"))
-  | (a::_ ,    [])              -> (false, (a, LITERAL "length mismatch"))
-  | (   [], b::_ )              -> (false, (b, LITERAL "length mismatch"))
-  | _                           -> (false, (LITERAL "error", LITERAL "error"))
-
-let prog  = "~ (p /\ q) \/ (~p/\q)"
-let expected_output = [NEG; LPAR; LITERAL "p"; CON; LITERAL "q"; RPAR; DIS; LPAR; NEG; LITERAL "p"; CON; LITERAL "q"; RPAR]
-let output = (explode prog |> lex)
-let output2 = String.filter (fun x -> x <> ' ') prog |> explode |> lex
-
-printfn "input: %A"   prog
-let (r,e) = checker (output, expected_output) in
-  if not r then
-    printfn "\noutput: %A\nresult: %A" output e
-
-let (r,e) = checker (output2, expected_output) in
-  if not r then
-    printfn "\noutput2: %A\nresult: %A" output2 e
