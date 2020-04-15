@@ -1,19 +1,20 @@
-module Cnf
+module LogicParse
 
 type TOKEN =
   | LITERAL of string
   | CON  | DIS
-  | NEG
+  | NEG  | IMPL
   | LPAR | RPAR
+  | MISMATCH of int // Only used for debugging
 
 let explode (s : string) = [for c in s -> c]
 let isA t c              = List.exists (fun c' -> c = c') t
 
-let operator   = ["/\\"; "\\/"; "~"]
-let letter     = explode "abcdefghijklmnopqrstuvwxyz"
-let asdf     = explode "\\/()~"
+let operator             = ["/\\"; "\\/"; "~"]
+let letter               = explode "abcdefghijklmnopqrstuvwxyz"
+let asdf                 = explode "\\/()~->"
 let single_letter_symbol = explode "()~"
-let whitespace = explode " \n"
+let whitespace           = explode " \n"
 
 
 let rec lex = function
@@ -42,4 +43,5 @@ and get_op = function
   | ")"   -> RPAR
   | "/\\" -> CON
   | "\\/" -> DIS
+  | "->"  -> IMPL
   | op    -> failwith ("Unrecognized operator: " + string op)
