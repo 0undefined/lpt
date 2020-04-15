@@ -1,17 +1,20 @@
 module LogicParse
 
 type TOKEN =
-  | LITERAL of string
-  | CON  | DIS
-  | NEG  | IMPL
+  | LITERAL   of string
+  | PREDICATE of string
+  | NEG | FORALL | EXISTS
+  | CON | DIS
+  | IMPL
   | LPAR | RPAR
   | MISMATCH of int // Only used for debugging
 
 let explode (s : string) = [for c in s -> c]
 let isA t c              = List.exists (fun c' -> c = c') t
 
-let operator             = ["/\\"; "\\/"; "~"]
+let operator             = ["/\\"; "\\/"; "~"; "∀"; "∃"]
 let letter               = explode "abcdefghijklmnopqrstuvwxyz"
+let LETTER               = explode "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 let asdf                 = explode "\\/()~->"
 let single_letter_symbol = explode "()~"
 let whitespace           = explode " \n"
@@ -39,6 +42,8 @@ and lex_op s = function
 
 and get_op = function
   | "~"   -> NEG
+  | "∀"   -> FORALL
+  | "∃"   -> EXISTS
   | "("   -> LPAR
   | ")"   -> RPAR
   | "/\\" -> CON

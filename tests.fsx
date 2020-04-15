@@ -28,13 +28,20 @@ let test (prog: string) (expected_out: TOKEN list) =
         (res.[e].ToString())
 
 
-let prog            = "~ (p /\ q) \/ (~p/\q) -> r \/ (q /\ ~ s)"
-let expected_output = [
-  NEG; LPAR;      LITERAL "p"; CON; LITERAL "q"; RPAR; DIS;
-       LPAR; NEG; LITERAL "p"; CON; LITERAL "q"; RPAR; IMPL;
-       LITERAL "r"; DIS;
-       LPAR;      LITERAL "q"; CON; NEG; LITERAL "s"; RPAR]
+let test1     = "~ (p /\ q) \/ (~p/\q) -> r \/ (q /\ ~ s)"
+let test1_out = [NEG;
+  LPAR;      LITERAL "p"; CON; LITERAL "q"; RPAR; DIS;
+  LPAR; NEG; LITERAL "p"; CON; LITERAL "q"; RPAR; IMPL; LITERAL "r"; DIS;
+  LPAR;      LITERAL "q"; CON; NEG; LITERAL "s"; RPAR]
 
+// Test with and without spacing
+test test1 test1_out
+test (String.filter (fun x -> x <> ' ') test1) test1_out
 
-test prog expected_output
-test (String.filter (fun x -> x <> ' ') prog) expected_output
+let test2     = "∀x(P x -> ∃y L x y)"
+let test2_out = [
+  FORALL; LITERAL "x"; LPAR; PREDICATE "P"; LITERAL "x"; IMPL;
+  EXISTS; LITERAL "y"; PREDICATE "L"; LITERAL"y"; LITERAL"x"]
+
+test test2 test2_out
+test (String.filter (fun x -> x <> ' ') test2) test2_out
