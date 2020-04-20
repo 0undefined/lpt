@@ -1,0 +1,3 @@
+[submodule "lib/FsLexYacc"]
+	path = lib/FsLexYacc
+	url = git@github.com:fsprojects/FsLexYacc.git
