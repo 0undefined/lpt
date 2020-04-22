@@ -1,5 +1,3 @@
-#r "lib/FsLexYacc/src/FsLex/bin/Release/netcoreapp3.1/FsLexYacc.Runtime"
-
 open System.Text
 open Parser
 open FSharp.Text.Lexing
