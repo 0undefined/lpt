@@ -20,11 +20,9 @@ Requirements
 * Make
 
 1. `git clone --recursive <git-url>`
-2. `cd lpt/lib/FsLexYacc/`
-3. `./build.sh --target release`
-   _One might need to edit global.json to match the installed version of dotnet_
-4. `cd ../..`
-5. `make`
+2. `cd lpt`
+   _One might need to edit lib/FsLexYacc/global.json to match the installed version of dotnet_
+3. `make`
 
 
 ## Usage
