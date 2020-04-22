@@ -11,23 +11,27 @@ let parse_string (s: string) : AbSyn.UntypedExp =
   Parser.start Lexer.token
   <| LexBuffer<char>.FromString s
 
-let parse_stdin =
-  let rec read_input lines =
+let parse_stdin () =
+  let rec read_input () =
     match System.Console.ReadLine() with
-      | null -> List.rev lines
-      | ""   -> read_input lines
-      | s    -> read_input (s::lines)
+      | null -> []
+      | ""   -> read_input ()
+      | s    -> s :: read_input ()
 
-  read_input [] |> Array.ofList |> concat |> parse_string |> AbSyn.prettyformat |> printfn ": %s"
+  let input = read_input () |> Array.ofList |> concat in
+  if input = "" then
+    printfn "Missing input"
+  else
+    parse_string input |> AbSyn.prettyformat |> printfn ": %s"
 
 [<EntryPoint>]
 let main (argv: string []) : int =
   try
     match argv with
-      | [| |]         -> printfn "Missing input"
-      | [|"-c"; _ |]  -> printfn "CNF transformation not supported yet"
-      | [| formula |] -> parse_string formula |> AbSyn.prettyformat |> printfn ": %s"
-      | formulas      -> concat formulas |> parse_string |> AbSyn.prettyformat |> printfn ": %s"
+      | [|          |] -> parse_stdin ()
+      | [|"-c"; _   |] -> printfn "CNF transformation not supported yet"
+      | [| formula  |] -> parse_string formula |> AbSyn.prettyformat |> printfn ": %s"
+      |    formulas    -> concat formulas |> parse_string |> AbSyn.prettyformat |> printfn ": %s"
     0
   with
     | SyntaxError (line,col) ->
@@ -42,7 +46,7 @@ let main (argv: string []) : int =
         printfn "File not found exception: %A" e
         System.Environment.Exit 1
         0
-    | e ->
-        printfn "Unknown error: %A" e
+    | :? System.TypeInitializationException as e ->
+        printfn "Exception: %A" e
         System.Environment.Exit 1
         0
