@@ -14,7 +14,10 @@ AbSynLib=bin/AbSyn.dll
 ParserLib=bin/Parser.dll
 LexerLib=bin/Lexer.dll
 
-all: $(OUT)
+all: bin $(OUT)
+
+bin:
+	@mkdir -p bin
 
 $(LEXYACC):
 	(cd lib/FsLexYacc && ./build --target release)
