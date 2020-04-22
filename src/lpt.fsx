@@ -18,18 +18,24 @@ let parse_stdin () =
       | ""   -> read_input ()
       | s    -> s :: read_input ()
 
+  // Should trim whitespace here
   let input = read_input () |> Array.ofList |> concat in
-  if input = "" then
-    printfn "Missing input"
-  else
-    parse_string input |> AbSyn.prettyformat |> printfn ": %s"
+  if  input = ""
+  then printfn "Missing input"
+  else parse_string input
+      |> AbSyn.prettyformat
+      |> printfn ": %s"
 
 [<EntryPoint>]
 let main (argv: string []) : int =
   try
     match argv with
       | [|          |] -> parse_stdin ()
+      | [|"-i"; _   |] -> printfn "Formula identification not supported yet"
       | [|"-c"; _   |] -> printfn "CNF transformation not supported yet"
+      | [|"-h"; _   |] -> printfn "Horn transformation not supported yet"
+      | [|"-n"; _   |] -> printfn "NNF transformation not supported yet"
+      | [|"-d"; _   |] -> printfn "Directed Asyclic Graph transformation not supported yet"
       | [| formula  |] -> parse_string formula |> AbSyn.prettyformat |> printfn ": %s"
       |    formulas    -> concat formulas |> parse_string |> AbSyn.prettyformat |> printfn ": %s"
     0
