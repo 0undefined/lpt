@@ -52,7 +52,7 @@ but requires time none the less.
     - [ ] Horn
 * [ ] Identify and display which form the input formula is
 * [ ] _perhaps_ Predicate logic syntax support
-  + [ ] UTF8
+  + [x] UTF8
   + [ ] Predicates
   + [ ] Variables
   + [ ] Function symbols
