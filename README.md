@@ -1,11 +1,30 @@
-# Logic Parser and Transformer
+# Logic-formula Parser and Transformer (lpt)
 
-Read, parse, verify and transform logic formulas.
+Read, parse, verify, and transform (propositional) logic formulas of the style
+described in Huth and Ryans book "Logic in computer science".
 
 
 ## Status
 
-WIP, no features work,
+The current status with `lpt` is a very limited syntax which works and `lpt` is
+only able to parse conjunctions, disjunctions and negations. To see a more
+complete feature list go to [roadmap](#roadmap)
+
+
+## Compiling
+
+Requirements
+
+* F#
+* Dotnet
+* Make
+
+1. `git clone --recursive <git-url>`
+2. `cd lpt/lib/FsLexYacc/`
+3. `./build.sh --target release`
+   _One might need to edit global.json to match the installed version of dotnet_
+4. `cd ../..`
+5. `make`
 
 
 ## Usage
@@ -18,10 +37,27 @@ $ lpt "~(~p\/q)/\~(p -> q)"
 ```
 
 
-## Compiling
+### Roadmap
 
-Requirements
+There is a lot of features planned which should not be that hard to implement,
+but requires time none the less.
 
-* F#
-* Mono, if you're on gnu/linux
-* Make, because of course you're on gnu/linux
+* [ ] Full propositional logic syntax support
+  + [x] Negation `~`
+  + [x] Conjunctions `/\`
+  + [x] Disjunctions `\/`
+  + [x] Parenthesis
+  + [ ] Implication `->`
+* [ ] Transformation
+  + [ ] Normal forms
+    - [ ] CNF
+    - [ ] Horn
+* [ ] Identify and display which form the input formula is
+* [ ] _perhaps_ Predicate logic syntax support
+  + [ ] UTF8
+  + [ ] Predicates
+  + [ ] Variables
+  + [ ] Function symbols
+* [ ] _perhaps_ SAT solving
+* [ ] _perhaps_ Sequent Proving of the form φ⊢ψ, where φ is a set of
+      predicates and ψ is the conclusion which we want to prove.
