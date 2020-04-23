@@ -53,9 +53,12 @@ but requires time none the less.
 * [ ] Identify and display which form the input formula is
 * [ ] _perhaps_ Predicate logic syntax support
   + [x] UTF8
-  + [ ] Predicates
-  + [ ] Variables
+  + [ ] Forall `∀`
+  + [ ] Exists `∃`
   + [ ] Function symbols
+  + [ ] Predicates
+  + [ ] Terms
+  + [ ] Variables
 * [ ] _perhaps_ SAT solving
 * [ ] _perhaps_ Sequent Proving of the form φ⊢ψ, where φ is a set of
       predicates and ψ is the conclusion which we want to prove.
