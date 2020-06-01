@@ -31,6 +31,7 @@ type Exp<'T> =
   | Not       of Exp<'T>           * Position
   | And       of Exp<'T> * Exp<'T> * Position
   | Or        of Exp<'T> * Exp<'T> * Position
+  | Impl      of Exp<'T> * Exp<'T> * Position
 
 (****************************************************)
 (********** Pretty-Printing Functionality ***********)
@@ -99,6 +100,7 @@ let expPos = function
   | Constant (_, p)    -> p
   | And      (_, _, p) -> p
   | Or       (_, _, p) -> p
+  | Impl     (_, _, p) -> p
   | Not      (_, p)    -> p
   | _                  -> failwith "Parsing error, unable to get position"
 
@@ -108,10 +110,12 @@ type TypedExp   = Exp<bool>
 
 let rec prettyformat (expr: Exp<'T>) : string =
   match expr with
-  | Not (And (a,b,_),_)   -> "~(" + prettyformat (And (a,b,(0,0))) + ")"
+  | Not (And (a,b,_),_)  -> "~(" + prettyformat (And (a,b,(0,0))) + ")"
   | Not (Or (a,b,_),_)   -> "~(" + prettyformat (Or (a,b,(0,0))) + ")"
+  | Not (Impl (a,b,_),_) -> "~(" + prettyformat (Impl (a,b,(0,0))) + ")"
   | Not (n,_)       -> "~" + prettyformat n
   | Literal (l,_)   -> string l
   | Constant (c,_)  -> if c then "T" else "F"
   | And (a, b, _)   -> prettyformat a + " /\\ " + prettyformat b
   | Or  (a, b, _)   -> prettyformat a + " \\/ " + prettyformat b
+  | Impl  (a, b, _) -> prettyformat a + " -> " + prettyformat b

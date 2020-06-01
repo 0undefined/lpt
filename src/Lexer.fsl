@@ -41,6 +41,7 @@ rule token = parse
   | character        { LITERAL (char (lexbuf.Lexeme.[0]), getPos lexbuf) }
   | "/\\"            { AND (getPos lexbuf) }
   | "\\/"            { OR (getPos lexbuf) }
+  | "->"             { IMPL (getPos lexbuf) }
   | '('              { LPAR (getPos lexbuf) }
   | ')'              { RPAR (getPos lexbuf) }
   | eof              { EOF }
