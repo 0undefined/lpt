@@ -26,18 +26,37 @@ let parse_stdin () =
       |> AbSyn.prettyformat
       |> printfn ": %s"
 
+let HELP_TEXT =
+  [ "Usage: lpt [OPTION] [FORMULA]...\n"
+  ; "By default interprets and validates logic formulas. Reads from stdin"
+  ; " when no\nformula is provided. Each option slightly modifies behaviour.\n"
+  ; "   -i, --identify   Identify formula and valid forms\n"
+  ; "   -c, --cnf        Transform FORMULA(s) to CNF form\n"
+  ; "   -h, --horn       Transform FORMULA(s) to HORN form\n"
+  ; "   -n, --nnf        Transform FORMULA(s) to NNF form\n"
+  ; "   -d, --dag        Transform FORMULA(s) representation into a DAG\n"
+  ; "   --help           Print this help message\n"
+  ; "   --version        Print version and exit\n"
+  ]
+
+let print_usage () =
+  printf "%s" (List.reduce (+) HELP_TEXT)
+
 [<EntryPoint>]
 let main (argv: string []) : int =
+  let args = Array.toList argv in
   try
-    match argv with
-      | [|          |] -> parse_stdin ()
-      | [|"-i"; _   |] -> printfn "Formula identification not supported yet"
-      | [|"-c"; _   |] -> printfn "CNF transformation not supported yet"
-      | [|"-h"; _   |] -> printfn "Horn transformation not supported yet"
-      | [|"-n"; _   |] -> printfn "NNF transformation not supported yet"
-      | [|"-d"; _   |] -> printfn "Directed Asyclic Graph transformation not supported yet"
-      | [| formula  |] -> parse_string formula |> AbSyn.prettyformat |> printfn ": %s"
-      |    formulas    -> concat formulas |> parse_string |> AbSyn.prettyformat |> printfn ": %s"
+    match args with
+      | [] | "-"    :: _  -> parse_stdin ()
+      | "--help"    :: _  -> print_usage ()
+      | "--version" :: _  -> printfn "lpt - Logic-formula Parser and Transformer 1.0 pre-alpha"
+
+      | "-i" :: _ | "--identify" :: _ -> printfn "Formula identification not supported yet"
+      | "-c" :: _ | "--cnf"      :: _ -> printfn "CNF transformation not supported yet"
+      | "-h" :: _ | "--horn"     :: _ -> printfn "Horn transformation not supported yet"
+      | "-n" :: _ | "--nnf"      :: _ -> printfn "NNF transformation not supported yet"
+      | "-d" :: _ | "--dag"      :: _ -> printfn "Directed Asyclic Graph transformation not supported yet"
+      | f :: fms                      -> List.reduce (+) (f::fms) |> parse_string |> AbSyn.prettyformat |> printfn ": %s"
     0
   with
     | SyntaxError (line,col) ->
