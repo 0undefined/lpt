@@ -2,10 +2,10 @@
 
 CC=fsharpc --nologo
 
-LEX						= lib/FsLexYacc/src/FsLex/bin/Release/netcoreapp3.1/fslex
-YACC					 = lib/FsLexYacc/src/FsYacc/bin/Release/netcoreapp3.1/fsyacc
+LEX            = lib/FsLexYacc/src/FsLex/bin/Release/netcoreapp3.1/fslex
+YACC           = lib/FsLexYacc/src/FsYacc/bin/Release/netcoreapp3.1/fsyacc
 LEXYACCRUNTIME = lib/FsLexYacc/src/FsLex/bin/Release/netcoreapp3.1/FsLexYacc.Runtime.dll
-LEXYACC				= $(LEX) $(YACC)
+LEXYACC        = $(LEX) $(YACC)
 
 OUT=bin/lpt
 
