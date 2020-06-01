@@ -40,12 +40,12 @@ $ lpt "~(~p\/q)/\~(p -> q)"
 There is a lot of features planned which should not be that hard to implement,
 but requires time none the less.
 
-* [ ] Full propositional logic syntax support
+* [x] Full propositional logic syntax support
   + [x] Negation `~`
   + [x] Conjunctions `/\`
   + [x] Disjunctions `\/`
   + [x] Parenthesis
-  + [ ] Implication `->`
+  + [x] Implication `->`
 * [ ] Transformation
   + [ ] Normal forms
     - [ ] CNF
